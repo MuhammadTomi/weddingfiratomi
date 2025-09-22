@@ -14,7 +14,7 @@ export const home = () => {
             </figcaption>`;
     };
 
-    // ✅ Ganti dari time.marriage ke time.reception
+    // ✅ Ambil waktu resepsi
     const generateTimeContent = ({time}) => {
         const {year, month, date, day} = time.reception;
         return `
@@ -49,20 +49,22 @@ export const home = () => {
 
         if (distance < 0) {
             clearInterval(intervalId);
+            // ✅ Kalau sudah lewat, tetap tampil countdown 0-0-0
             homeTime.innerHTML = generateCountdownMarkup(0, 0, 0, 0);
         } else {
             homeTime.innerHTML = generateCountdownMarkup(days, hours, minutes, seconds);
         }
     };
 
-    // ✅ Ubah ke timeData.reception
     const startCountdown = (homeTime, timeData) => {
         const {year, month, date} = timeData.reception;
         const endTime = new Date(`${String(year)}-${String(monthNameToNumber(month)).padStart(2, '0')}-${String(date).padStart(2, '0')}T00:00:00`);
 
         updateCountdown(endTime, homeTime);
-        setInterval(() => updateCountdown(endTime, homeTime), 1000);
+        intervalId = setInterval(() => updateCountdown(endTime, homeTime), 1000);
     };
+
+    let intervalId; // ✅ supaya clearInterval tidak error
 
     const initializeHome = () => {
         const {bride, time, link} = data;
